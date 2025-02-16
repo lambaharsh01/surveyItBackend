@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/harshLamba2/feedbackF/models/databaseSchema"
-	"github.com/harshLamba2/feedbackF/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
+	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
 )
 
 func GetAllUsers(db *gorm.DB) gin.HandlerFunc {
@@ -46,11 +46,11 @@ func GetAllUsers(db *gorm.DB) gin.HandlerFunc {
 		db.Model(&databaseSchema.Users{}).Count(&total)
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":	true,
-			"data":  	usersDetails,
-			"total": 	total,
-			"from":  	offset,
-			"to":    	offset + limit,
+			"success": true,
+			"data":    usersDetails,
+			"total":   total,
+			"from":    offset,
+			"to":      offset + limit,
 		})
 	}
 }
@@ -69,16 +69,16 @@ func PermissionAccess(db *gorm.DB) gin.HandlerFunc {
 		if payload.TicketGenerationStatus {
 			updatedTicketGenerationStatus = 200
 		}
-		
+
 		if err := db.Model(&databaseSchema.Users{}).Where("email = ?", payload.UserEmail).Update("ticket_generation_status", updatedTicketGenerationStatus).Error; err != nil {
 			c.Error(err)
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":true,
+			"success":                true,
 			"ticketGenerationStatus": updatedTicketGenerationStatus,
-			"message":"Status Changed",
+			"message":                "Status Changed",
 		})
 	}
 }

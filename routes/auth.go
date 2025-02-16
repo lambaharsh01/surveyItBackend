@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/harshLamba2/feedbackF/controllers/auth"
-	"github.com/harshLamba2/feedbackF/utils/constants"
+	"github.com/lambaharsh01/surveyItBackend/controllers/auth"
+	"github.com/lambaharsh01/surveyItBackend/utils/constants"
 	"gorm.io/gorm"
 )
 

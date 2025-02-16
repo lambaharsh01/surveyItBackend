@@ -1,4 +1,4 @@
-module github.com/harshLamba2/feedbackF
+module github.com/lambaharsh01/surveyItBackend
 
 go 1.23.0
 
