@@ -13,10 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/harshLamba2/feedbackF/models/databaseSchema"
-	"github.com/harshLamba2/feedbackF/models/structEntities"
-	"github.com/harshLamba2/feedbackF/utils"
-	"github.com/harshLamba2/feedbackF/utils/constants"
+	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
+	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/utils"
+	"github.com/lambaharsh01/surveyItBackend/utils/constants"
 )
 
 func InitForgotPassword(db *gorm.DB) gin.HandlerFunc {

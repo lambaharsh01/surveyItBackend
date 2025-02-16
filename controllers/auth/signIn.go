@@ -8,21 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/harshLamba2/feedbackF/models/databaseSchema"
-	"github.com/harshLamba2/feedbackF/models/structEntities"
-	"github.com/harshLamba2/feedbackF/utils"
+	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
+	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/utils"
 )
-
-
 
 func Me(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		
+
 		user := utils.GetRequestParameters(c)
 
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": user,
+			"data":    user,
 		})
 
 	}
@@ -56,11 +54,11 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 		fmt.Println(LoginUserDataResponse, "LoginUserDataResponse")
 
 		tokenInfo := &structEntities.AuthToken{
-			UserId: LoginUserDataResponse.ID,
-			UserEmail: LoginUserDataResponse.Email,
-			UserName: LoginUserDataResponse.Name,
-			UserGender: LoginUserDataResponse.Gender,
-			UserType: LoginUserDataResponse.UserType,
+			UserId:                 LoginUserDataResponse.ID,
+			UserEmail:              LoginUserDataResponse.Email,
+			UserName:               LoginUserDataResponse.Name,
+			UserGender:             LoginUserDataResponse.Gender,
+			UserType:               LoginUserDataResponse.UserType,
 			TicketGenerationStatus: LoginUserDataResponse.TicketGenerationStatus,
 		}
 
@@ -79,6 +77,3 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 
 	}
 }
-
-
-
