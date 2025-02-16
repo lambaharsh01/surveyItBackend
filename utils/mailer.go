@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/harshLamba2/feedbackF/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
 	"gopkg.in/gomail.v2"
 )
 

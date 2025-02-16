@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harshLamba2/feedbackF/utils"
+	"github.com/lambaharsh01/surveyItBackend/utils"
 )
 
 func AuthenticationHandler() gin.HandlerFunc {

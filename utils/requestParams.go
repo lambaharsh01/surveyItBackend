@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/harshLamba2/feedbackF/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,13 +41,13 @@ func GetRequestParameters(c *gin.Context) *structEntities.AuthToken {
 	var userGender string = GetRequestString(c, "userGender")
 	var userType string = GetRequestString(c, "userType")
 	var ticketGenerationStatus int = GetRequestInt(c, "ticketGenerationStatus")
-	
+
 	return &structEntities.AuthToken{
-		UserId: userId,
-		UserEmail: userEmail,
-		UserName: userName,
-		UserGender: userGender,
-		UserType: userType,
+		UserId:                 userId,
+		UserEmail:              userEmail,
+		UserName:               userName,
+		UserGender:             userGender,
+		UserType:               userType,
 		TicketGenerationStatus: ticketGenerationStatus,
 	}
 }

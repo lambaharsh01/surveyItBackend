@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harshLamba2/feedbackF/utils"
+	"github.com/lambaharsh01/surveyItBackend/utils"
 )
 
 func IsAdmin() gin.HandlerFunc {

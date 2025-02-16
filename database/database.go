@@ -8,8 +8,8 @@ import (
 
 	"gorm.io/gorm/logger"
 
-	"github.com/harshLamba2/feedbackF/models/databaseSchema"
-	"github.com/harshLamba2/feedbackF/utils"
+	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
+	"github.com/lambaharsh01/surveyItBackend/utils"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -28,8 +28,8 @@ func InitDb() *gorm.DB {
 	if err := performMigrations(); err != nil {
 		log.Fatalf("Could not perform migrations: %v", err)
 	}
-	
-	if err:= MigrateWithDefaultData(); err!=nil {
+
+	if err := MigrateWithDefaultData(); err != nil {
 		log.Fatalf("Could not migrate with default data: %v", err)
 	}
 
@@ -82,9 +82,7 @@ func performMigrations() error {
 	return err
 }
 
-
 func MigrateWithDefaultData() error {
-
 
 	transaction := dataBaseInstance.Begin()
 
@@ -99,7 +97,7 @@ func MigrateWithDefaultData() error {
 		transaction.Rollback()
 		return err
 	}
-	
+
 	transaction.Exec("DELETE FROM question_types WHERE 1=1")
 	if err := transaction.Create(&databaseSchema.DefaultQuestionTypes).Error; err != nil {
 		transaction.Rollback()
@@ -107,7 +105,7 @@ func MigrateWithDefaultData() error {
 	}
 
 	return transaction.Commit().Error
-	
+
 }
 
 func CloseDB() {

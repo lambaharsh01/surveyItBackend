@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"github.com/harshLamba2/feedbackF/models/databaseSchema"
+	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
 )
 
 func GetQuestionTypes(db *gorm.DB) gin.HandlerFunc {
@@ -14,14 +14,14 @@ func GetQuestionTypes(db *gorm.DB) gin.HandlerFunc {
 
 		questionType := databaseSchema.QuestionType{}
 
-		if err:= db.Find(&questionType).Error; err!=nil{
+		if err := db.Find(&questionType).Error; err != nil {
 			c.Error(err)
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":true,
-			"questionType":questionType,
+			"success":      true,
+			"questionType": questionType,
 		})
 
 	}
@@ -32,17 +32,15 @@ func GetFileTypes(db *gorm.DB) gin.HandlerFunc {
 
 		fileType := databaseSchema.FileType{}
 
-		if err:= db.Find(&fileType).Error; err!=nil{
+		if err := db.Find(&fileType).Error; err != nil {
 			c.Error(err)
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"success":true,
-			"fileType":fileType,
+			"success":  true,
+			"fileType": fileType,
 		})
 
 	}
 }
-
-
