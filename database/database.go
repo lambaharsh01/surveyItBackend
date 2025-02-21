@@ -76,7 +76,7 @@ func performMigrations() error {
 		&databaseSchema.Users{},
 		&databaseSchema.QuestionType{},
 		&databaseSchema.FileType{},
-		&databaseSchema.FormSchema{},
+		&databaseSchema.SurveySchema{},
 		&databaseSchema.QuestionSchema{},
 	)
 	return err

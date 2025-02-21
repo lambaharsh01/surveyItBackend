@@ -12,7 +12,7 @@ import (
 func GetQuestionTypes(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		questionType := databaseSchema.QuestionType{}
+		questionType := []databaseSchema.QuestionType{}
 
 		if err := db.Find(&questionType).Error; err != nil {
 			c.Error(err)
@@ -30,7 +30,7 @@ func GetQuestionTypes(db *gorm.DB) gin.HandlerFunc {
 func GetFileTypes(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		fileType := databaseSchema.FileType{}
+		fileType := []databaseSchema.FileType{}
 
 		if err := db.Find(&fileType).Error; err != nil {
 			c.Error(err)
