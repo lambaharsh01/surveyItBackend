@@ -16,7 +16,7 @@ func SendEmail(mailerOption *structEntities.MailerModel) error {
 	var senderEmailPassword string = GetEnv("EMAIL_PASSWORD")
 
 	m.SetHeader("From", senderEmailId)
-	m.SetHeader("To", mailerOption.ReciverEmailId)
+	m.SetHeader("To", mailerOption.ReceiverEmailId)
 
 	for _, cc := range mailerOption.CC {
 		m.SetHeader("Cc", cc)

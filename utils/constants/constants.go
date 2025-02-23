@@ -26,7 +26,7 @@ const (
 	SetPassword      string = "/set-password"
 	GetQuestionTypes string = "/get-question-types"
 	GetFileTypes     string = "/get-file-types"
-	
+	AddSurvey        string = "/add-survey"
 )
 
 const OtpHtmlDesign string = `

@@ -1,4 +1,4 @@
-package fetch
+package controllers
 
 import (
 	"net/http"
@@ -28,6 +28,24 @@ func GetQuestionTypes(db *gorm.DB) gin.HandlerFunc {
 }
 
 func GetFileTypes(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		fileType := []databaseSchema.FileType{}
+
+		if err := db.Find(&fileType).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success":  true,
+			"fileType": fileType,
+		})
+
+	}
+}
+
+func AddSurvey(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		fileType := []databaseSchema.FileType{}

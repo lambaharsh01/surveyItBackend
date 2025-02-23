@@ -7,7 +7,6 @@ type SurveySchema struct {
 	SurveyCode 				string 		`json:"surveyCode" gorm:"type:varchar(50);unique;not null"`
 	SurveyName 				string 		`json:"surveyName" gorm:"type:varchar(100);not null"`
 	SurveyDescription 		string 		`json:"surveyDescription" gorm:"type:varchar(500)"`
-	SurveyUse 				string 		`json:"surveyUse" gorm:"type:varchar(100)"`
 	SurveyTargetAudience 	string 		`json:"surveyTargetAudience" gorm:"type:varchar(100)"`
 	SurveyAlignment 		string 		`json:"surveyAlignment" gorm:"type:varchar(50)"`
 	SurveyColorTheme 		string 		`json:"surveyColorTheme" gorm:"type:varchar(50)"`

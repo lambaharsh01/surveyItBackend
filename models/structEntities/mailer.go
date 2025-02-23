@@ -1,7 +1,7 @@
 package structEntities
 
 type MailerModel struct {
-	ReciverEmailId string 
+	ReceiverEmailId string 
 	Subject string
 	Body string
 	CC []string

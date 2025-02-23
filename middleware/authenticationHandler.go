@@ -35,7 +35,6 @@ func AuthenticationHandler() gin.HandlerFunc {
 		c.Set("userName", claims.UserName)
 		c.Set("userGender", claims.UserGender)
 		c.Set("userType", claims.UserType)
-		c.Set("ticketGenerationStatus", claims.TicketGenerationStatus)
 		c.Next()
 	}
 }
