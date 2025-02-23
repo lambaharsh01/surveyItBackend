@@ -19,7 +19,6 @@ import (
 	"github.com/lambaharsh01/surveyItBackend/utils/constants"
 )
 
-
 func Me(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -149,9 +148,9 @@ func InitForgotPassword(db *gorm.DB) gin.HandlerFunc {
 
 		emailParameter := &structEntities.MailerModel{
 			ReceiverEmailId: ForgotOtpPayload.UserEmail,
-			Subject:        "OTP For Charter Password Reset",
-			Body:           fmt.Sprintf(constants.OtpHtmlDesign, randomNumber),
-			BodyType:       "html",
+			Subject:         "OTP For Charter Password Reset",
+			Body:            fmt.Sprintf(constants.OtpHtmlDesign, randomNumber),
+			BodyType:        "html",
 		}
 
 		if err := utils.SendEmail(emailParameter); err != nil {
@@ -234,9 +233,9 @@ func InitSignUp(db *gorm.DB) gin.HandlerFunc {
 		// step 5: send email
 		emailParameter = &structEntities.MailerModel{
 			ReceiverEmailId: initSignUpPayloadStruct.UserEmail,
-			Subject:        "OTP For Charter Sign Up",
-			Body:           fmt.Sprintf(constants.OtpHtmlDesign, randomNumber),
-			BodyType:       "html",
+			Subject:         "OTP For Charter Sign Up",
+			Body:            fmt.Sprintf(constants.OtpHtmlDesign, randomNumber),
+			BodyType:        "html",
 			// CC: []string { "email@gmail.com", "email2@gmail.com" },
 		}
 
@@ -379,11 +378,23 @@ func SetPassword(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		authStruct := &structEntities.AuthToken{
-			UserEmail: changePasswordPayload.UserEmail,
+		var userDetails *structEntities.LoginUserDataResponseStruct
+
+		if err := db.Model(&databaseSchema.Users{}).Where("email = ?", changePasswordPayload.UserEmail).First(&userDetails); err.Error != nil {
+			c.Error(err.Error)
+			return
 		}
 
-		token, err := utils.GenerateJWT(authStruct)
+		tokenInfo := &structEntities.AuthToken{
+			UserId:                 userDetails.ID,
+			UserEmail:              userDetails.Email,
+			UserName:               userDetails.Name,
+			UserGender:             userDetails.Gender,
+			UserType:               userDetails.UserType,
+			TicketGenerationStatus: userDetails.TicketGenerationStatus,
+		}
+
+		token, err := utils.GenerateJWT(tokenInfo)
 		if err != nil {
 			c.Error(err)
 		}
@@ -395,4 +406,3 @@ func SetPassword(db *gorm.DB) gin.HandlerFunc {
 		})
 	}
 }
-

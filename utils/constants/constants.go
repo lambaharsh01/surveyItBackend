@@ -3,6 +3,7 @@ package constants
 const (
 	RootUser string = "lambaharsh01@gmail.com"
 )
+const AlphanumericCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 const (
 	OtpValidityMinuets             int = 3
@@ -27,6 +28,9 @@ const (
 	GetQuestionTypes string = "/get-question-types"
 	GetFileTypes     string = "/get-file-types"
 	AddSurvey        string = "/add-survey"
+	UpdateSurvey     string = "/update-survey/:id"
+	GetSurveys       string = "/get-surveys"
+	DeleteSurvey     string = "/delete-survey/:id"
 )
 
 const OtpHtmlDesign string = `

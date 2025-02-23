@@ -12,6 +12,9 @@ func FetchRoutes(router *gin.RouterGroup, db *gorm.DB) {
 	router.GET(constants.GetQuestionTypes, controllers.GetQuestionTypes(db))
 	router.GET(constants.GetFileTypes, controllers.GetFileTypes(db))
 
-	router.POST(constants.GetFileTypes, controllers.AddSurvey(db))
+	router.POST(constants.AddSurvey, controllers.AddSurvey(db))
+	router.PUT(constants.UpdateSurvey, controllers.UpdateSurvey(db))
+	router.POST(constants.GetSurveys, controllers.GetSurveys(db))
+	router.DELETE(constants.DeleteSurvey, controllers.DeleteSurvey(db))
 
 }
