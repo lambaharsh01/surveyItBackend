@@ -14,7 +14,10 @@ func FetchRoutes(router *gin.RouterGroup, db *gorm.DB) {
 
 	router.POST(constants.AddSurvey, controllers.AddSurvey(db))
 	router.PUT(constants.UpdateSurvey, controllers.UpdateSurvey(db))
+	router.GET(constants.GetSurvey, controllers.GetSurvey(db))
 	router.POST(constants.GetSurveys, controllers.GetSurveys(db))
 	router.DELETE(constants.DeleteSurvey, controllers.DeleteSurvey(db))
+
+	router.POST(constants.UpdateQuestionary, controllers.UpdateQuestionary(db))
 
 }

@@ -65,6 +65,7 @@ func AddSurvey(db *gorm.DB) gin.HandlerFunc {
 			SurveyTargetAudience: payload.SurveyTargetAudience,
 			SurveyAlignment:      payload.SurveyAlignment,
 			SurveyColorTheme:     payload.SurveyColorTheme,
+			AllowMultipleSubmissions:   payload.AllowMultipleSubmissions,
 			DeletedAt:            nil,
 		}
 
@@ -112,6 +113,7 @@ func UpdateSurvey(db *gorm.DB) gin.HandlerFunc {
 			"survey_target_audience": payload.SurveyTargetAudience,
 			"survey_alignment":       payload.SurveyAlignment,
 			"survey_color_theme":     payload.SurveyColorTheme,
+			"allow_multiple_submissions":     payload.AllowMultipleSubmissions,
 		}
 
 		var activeFrom time.Time
@@ -144,6 +146,43 @@ func UpdateSurvey(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
+func GetSurvey(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var surveyCode string= c.Param("surveyCode")
+
+		user := utils.GetRequestParameters(c)
+
+		survey := structEntities.SurveysResponseStruct{}
+
+		if err := db.Model(&databaseSchema.SurveySchema{}).
+			Select(`id, 
+			survey_code, 
+			survey_name, 
+			survey_description, 
+			survey_target_audience, 
+			survey_alignment, 
+			survey_color_theme, 
+			allow_multiple_submissions,
+			DATE_FORMAT(active_from, '%Y-%m-%d') AS active_from, 
+			DATE_FORMAT(active_to, '%Y-%m-%d') AS active_to,
+			CASE WHEN CURRENT_DATE BETWEEN active_from AND active_to THEN 1 ELSE 0 END AS active,
+			DATE_FORMAT(created_at, '%D %M %Y') AS created_at`).
+			Where("survey_code = ? AND created_by = ? AND deleted_at IS NULL", surveyCode, user.UserId).
+			Order("id DESC").
+			First(&survey).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"data":    survey,
+		})
+
+	}
+}
+
 func GetSurveys(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -169,6 +208,7 @@ func GetSurveys(db *gorm.DB) gin.HandlerFunc {
 			survey_target_audience, 
 			survey_alignment, 
 			survey_color_theme, 
+			allow_multiple_submissions,
 			DATE_FORMAT(active_from, '%Y-%m-%d') AS active_from, 
 			DATE_FORMAT(active_to, '%Y-%m-%d') AS active_to,
 			CASE WHEN CURRENT_DATE BETWEEN active_from AND active_to THEN 1 ELSE 0 END AS active,
@@ -217,5 +257,118 @@ func DeleteSurvey(db *gorm.DB) gin.HandlerFunc {
 			"success": true,
 		})
 
+	}
+}
+
+
+func SaveQuestionary(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var payload structEntities.UpsertSurveyPayloadStruct
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			utils.AbortWithStatusJSON(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		user := utils.GetRequestParameters(c)
+
+		var survey databaseSchema.SurveySchema = databaseSchema.SurveySchema{
+			SurveyName:           payload.SurveyName,
+			SurveyDescription:    payload.SurveyDescription,
+			SurveyTargetAudience: payload.SurveyTargetAudience,
+			SurveyAlignment:      payload.SurveyAlignment,
+			SurveyColorTheme:     payload.SurveyColorTheme,
+			DeletedAt:            nil,
+		}
+
+		if err := utils.ParseDate(payload.ActiveFrom, &survey.ActiveFrom); err != nil {
+			utils.AbortWithStatusJSON(c, http.StatusBadRequest, "invalid active from date")
+			return
+		}
+
+		if err := utils.ParseDate(payload.ActiveTo, &survey.ActiveTo); err != nil {
+			utils.AbortWithStatusJSON(c, http.StatusBadRequest, "invalid active to date")
+			return
+		}
+
+		survey.SurveyCode = utils.GenerateUniqueKey(15)
+		survey.CreatedBy = user.UserId
+
+		if err := db.Create(&survey).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "survey created successfully",
+		})
+
+	}
+}
+
+
+func UpdateQuestionary(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var payload structEntities.AddQuestionaryPayloadStruct
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			utils.AbortWithStatusJSON(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		
+		transaction := db.Begin()
+		if transaction.Error !=nil {
+			c.Error(transaction.Error)
+			return
+		}
+
+		for _, question := range payload.Questionary {
+
+			questionSchema := databaseSchema.QuestionSchema{
+				Id: question.Id,
+				Question: question.Text,
+				Options: question.Options,
+				Required: question.Required,
+				Validation: question.Validation,
+				Min: question.Min,
+				Max: question.Max,
+				FormId: payload.FormId,
+				QuestionTypeId: question.QuestionTypeId,
+				FileTypeId: question.FileTypeId,
+			}
+
+			if err := transaction.Save(&questionSchema).Error; err!= nil {
+				transaction.Rollback()
+				c.Error(err)
+				return
+			}
+		}
+
+
+		if len(payload.DeletedQuestionIds) > 0 {
+
+			var setDeletedAt map[string]interface{} = map[string]interface{}{
+				"deleted_at":   time.Now(),
+			}
+
+			if err := db.Model(&databaseSchema.QuestionSchema{}).
+				Where("id IN ?", payload.DeletedQuestionIds).
+				Updates(setDeletedAt).Error; err!=nil {
+					transaction.Rollback()
+					c.Error(err)
+					return
+			}
+		}
+		
+		if err:= transaction.Commit().Error; err !=nil {
+			c.Error(err)
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "questionary updated successfully",
+		})
 	}
 }

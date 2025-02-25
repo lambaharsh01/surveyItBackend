@@ -10,6 +10,7 @@ type SurveySchema struct {
 	SurveyTargetAudience string     `json:"surveyTargetAudience" gorm:"type:varchar(100)"`
 	SurveyAlignment      string     `json:"surveyAlignment" gorm:"type:varchar(50)"`
 	SurveyColorTheme     string     `json:"surveyColorTheme" gorm:"type:varchar(50)"`
+	AllowMultipleSubmissions     	 bool     	`json:"allowMultipleSubmissions" gorm:"type:tinyint(1);not null;default:0"`
 	ActiveFrom           time.Time  `json:"activeFrom" gorm:"autoCreateTime"`
 	ActiveTo             time.Time  `json:"activeTo" gorm:"autoCreateTime"`
 	CreatedBy            uint       `json:"createdBy" gorm:"type:int;not null"`
