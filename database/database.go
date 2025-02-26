@@ -29,9 +29,9 @@ func InitDb() *gorm.DB {
 		log.Fatalf("Could not perform migrations: %v", err)
 	}
 
-	if err := MigrateWithDefaultData(); err != nil {
-		log.Fatalf("Could not migrate with default data: %v", err)
-	}
+	// if err := MigrateWithDefaultData(); err != nil {
+	// 	log.Fatalf("Could not migrate with default data: %v", err)
+	// }
 
 	return dataBaseInstance
 }

@@ -10,12 +10,12 @@ type QuestionSchema struct {
 	Validation     bool         `json:"validation" gorm:"type:tinyint(1);not null;default:0"`
 	Min            float64      `json:"min" gorm:"type:int;not null;default:0"`
 	Max            float64      `json:"max" gorm:"type:int;not null;default:0"`
-	FormId         uint         `json:"formId" gorm:"type:bigint unsigned;not null"`
+	SurveyId       uint         `json:"surveyId" gorm:"type:bigint unsigned;not null;index"`
 	QuestionTypeId uint         `json:"questionTypeId" gorm:"type:bigint unsigned;not null"`
 	FileTypeId     *uint        `json:"fileTypeId" gorm:"type:bigint unsigned"`
 	DeletedAt      *time.Time   `json:"deletedAt,omitempty" gorm:"type:timestamp NULL DEFAULT NULL"`
 	
-	SurveySchema   SurveySchema `gorm:"foreignKey:FormId;references:Id;constraint:OnDelete:CASCADE"`
+	SurveySchema   SurveySchema `gorm:"foreignKey:SurveyId;references:Id;constraint:OnDelete:CASCADE"`
 	QuestionType   QuestionType `gorm:"foreignKey:QuestionTypeId;references:Id;constraint:OnDelete:CASCADE"`
 	FileType       *FileType    `gorm:"foreignKey:FileTypeId;references:Id;constraint:OnDelete:SET NULL"`
 }

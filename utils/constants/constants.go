@@ -28,11 +28,11 @@ const (
 	GetQuestionTypes string = "/get-question-types"
 	GetFileTypes     string = "/get-file-types"
 
-	AddSurvey    string = "/add-survey"
-	UpdateSurvey string = "/update-survey/:id"
-	GetSurveys   string = "/get-surveys"
-	GetSurvey    string = "/get-survey/:surveyCode"
-	DeleteSurvey string = "/delete-survey/:id"
+	AddSurvey               string = "/add-survey"
+	UpdateSurvey            string = "/update-survey/:id"
+	GetSurveys              string = "/get-surveys"
+	GetSurveyAndQuestionary string = "/get-survey-and-questionary/:surveyCode"
+	DeleteSurvey            string = "/delete-survey/:id"
 
 	UpdateQuestionary string = "/update-questionary"
 )

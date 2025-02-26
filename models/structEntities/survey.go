@@ -31,7 +31,21 @@ type SurveysResponseStruct struct {
 	CreatedAt                string `json:"createdAt"`
 }
 
-type QuestionaryStruct struct {
+type QuestionResponseStruct struct {
+	ID             uint     `json:"id"`
+	Text           string   `json:"text"`
+	QuestionTypeID uint     `json:"questionTypeId"`
+	QuestionType   string   `json:"questionType"`
+	FileTypeID     *uint    `json:"fileTypeId"`
+	FileType       *string  `json:"fileType"`
+	Options        []string `json:"options"`
+	Required       bool     `json:"required"`
+	Validation     string   `json:"validation"`
+	Min            int      `json:"min"`
+	Max            int      `json:"max"`
+}
+
+type QuestionaryPayloadStructs struct {
 	Id             uint     `json:"id"`
 	Text           string   `json:"text" binding:"required"`
 	QuestionTypeId uint     `json:"questionTypeId" binding:"required"`
@@ -44,7 +58,7 @@ type QuestionaryStruct struct {
 }
 
 type AddQuestionaryPayloadStruct struct {
-	FormId             uint                `json:"formId" binding:"required"`
-	Questionary        []QuestionaryStruct `json:"questionary" binding:"required"`
-	DeletedQuestionIds []uint              `json:"deletedQuestionIds" binding:"required"`
+	SurveyId           uint                        `json:"SurveyId" binding:"required"`
+	Questionary        []QuestionaryPayloadStructs `json:"questionary" binding:"required"`
+	DeletedQuestionIds []uint                      `json:"deletedQuestionIds" binding:"required"`
 }

@@ -146,7 +146,7 @@ func UpdateSurvey(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func GetSurvey(db *gorm.DB) gin.HandlerFunc {
+func GetSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var surveyCode string= c.Param("surveyCode")
@@ -154,6 +154,7 @@ func GetSurvey(db *gorm.DB) gin.HandlerFunc {
 		user := utils.GetRequestParameters(c)
 
 		survey := structEntities.SurveysResponseStruct{}
+		questionary := []structEntities.QuestionResponseStruct{}
 
 		if err := db.Model(&databaseSchema.SurveySchema{}).
 			Select(`id, 
@@ -175,9 +176,36 @@ func GetSurvey(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+
+
+		var getQuestionsQuery string =`SELECT 
+			qs.id, 
+			qs.question AS text, 
+			qt.id AS question_type_id,
+			qt.question_type,
+			ft.id AS file_type_id,
+			ft.file_type,
+			qs.options, 
+			qs.required, 
+			qs.validation , 
+			qs.min, 
+			qs.max
+		FROM question_schemas qs
+		JOIN survey_schemas ss ON ss.id = qs.survey_id
+		JOIN question_types qt ON qt.id = qs.question_type_id 
+		LEFT JOIN file_types ft ON ft.id = qs.file_type_id
+		WHERE ss.survey_code = ? AND qs.deleted_at IS NULL AND created_by = ?`
+
+		if err := db.Raw(getQuestionsQuery, surveyCode, user.UserId).Scan(&questionary).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data":    survey,
+			"survey":    survey,
+			"questionary":    questionary,
+
 		})
 
 	}
@@ -333,7 +361,7 @@ func UpdateQuestionary(db *gorm.DB) gin.HandlerFunc {
 				Validation: question.Validation,
 				Min: question.Min,
 				Max: question.Max,
-				FormId: payload.FormId,
+				SurveyId: payload.SurveyId,
 				QuestionTypeId: question.QuestionTypeId,
 				FileTypeId: question.FileTypeId,
 			}
