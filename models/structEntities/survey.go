@@ -31,6 +31,20 @@ type SurveysResponseStruct struct {
 	CreatedAt                string `json:"createdAt"`
 }
 
+type QuestionRawResponseStruct struct {
+	ID             uint
+	Text           string
+	QuestionTypeID uint
+	QuestionType   string
+	FileTypeID     *uint
+	FileType       *string
+	Options        []byte
+	Required       bool
+	Validation     bool
+	Min            int
+	Max            int
+}
+
 type QuestionResponseStruct struct {
 	ID             uint     `json:"id"`
 	Text           string   `json:"text"`
@@ -40,7 +54,7 @@ type QuestionResponseStruct struct {
 	FileType       *string  `json:"fileType"`
 	Options        []string `json:"options"`
 	Required       bool     `json:"required"`
-	Validation     string   `json:"validation"`
+	Validation     bool     `json:"validation"`
 	Min            int      `json:"min"`
 	Max            int      `json:"max"`
 }

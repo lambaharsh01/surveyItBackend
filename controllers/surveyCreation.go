@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -154,6 +156,7 @@ func GetSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
 		user := utils.GetRequestParameters(c)
 
 		survey := structEntities.SurveysResponseStruct{}
+		questionaryRaw := []structEntities.QuestionRawResponseStruct{}
 		questionary := []structEntities.QuestionResponseStruct{}
 
 		if err := db.Model(&databaseSchema.SurveySchema{}).
@@ -176,8 +179,6 @@ func GetSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-
-
 		var getQuestionsQuery string =`SELECT 
 			qs.id, 
 			qs.question AS text, 
@@ -196,9 +197,36 @@ func GetSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
 		LEFT JOIN file_types ft ON ft.id = qs.file_type_id
 		WHERE ss.survey_code = ? AND qs.deleted_at IS NULL AND created_by = ?`
 
-		if err := db.Raw(getQuestionsQuery, surveyCode, user.UserId).Scan(&questionary).Error; err != nil {
+		if err := db.Raw(getQuestionsQuery, surveyCode, user.UserId).Scan(&questionaryRaw).Error; err != nil {
 			c.Error(err)
 			return
+		}
+
+
+
+		for _, raw := range questionaryRaw {
+
+			var unmarshaledSlice []string
+
+			if err:= json.Unmarshal(raw.Options, &unmarshaledSlice); err!=nil {
+				c.Error(err)
+				return
+			}
+
+			question := structEntities.QuestionResponseStruct{
+				ID: raw.ID,
+				Text: raw.Text,
+				QuestionTypeID: raw.QuestionTypeID,
+				QuestionType: raw.QuestionType,
+				FileTypeID: raw.FileTypeID,
+				FileType: raw.FileType,
+				Options: unmarshaledSlice,
+				Required: raw.Required,
+				Validation: raw.Validation,
+				Min: raw.Min,
+				Max: raw.Max,
+			}
+			questionary = append(questionary, question)
 		}
 
 		c.JSON(http.StatusOK, gin.H{
@@ -353,10 +381,17 @@ func UpdateQuestionary(db *gorm.DB) gin.HandlerFunc {
 
 		for _, question := range payload.Questionary {
 
+			marshaledOptions, err := json.Marshal(question.Options)
+			if err!=nil {
+				transaction.Rollback()
+				c.Error(err)
+				return 
+			}
+
 			questionSchema := databaseSchema.QuestionSchema{
 				Id: question.Id,
 				Question: question.Text,
-				Options: question.Options,
+				Options: marshaledOptions,
 				Required: question.Required,
 				Validation: question.Validation,
 				Min: question.Min,
@@ -365,6 +400,10 @@ func UpdateQuestionary(db *gorm.DB) gin.HandlerFunc {
 				QuestionTypeId: question.QuestionTypeId,
 				FileTypeId: question.FileTypeId,
 			}
+
+			fmt.Println(questionSchema, "questionSchema")
+			fmt.Println(questionSchema.Options, "questionSchema")
+			fmt.Println(len(questionSchema.Options), "questionSchema")
 
 			if err := transaction.Save(&questionSchema).Error; err!= nil {
 				transaction.Rollback()
