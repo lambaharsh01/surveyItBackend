@@ -18,7 +18,7 @@ type QuestionSchema struct {
 	FileTypeId     *uint        `json:"fileTypeId" gorm:"type:bigint unsigned"`
 	DeletedAt      *time.Time   `json:"deletedAt,omitempty" gorm:"type:timestamp NULL DEFAULT NULL"`
 	
-	SurveySchema   SurveySchema `gorm:"foreignKey:SurveyId;references:Id;constraint:OnDelete:CASCADE"`
-	QuestionType   QuestionType `gorm:"foreignKey:QuestionTypeId;references:Id;constraint:OnDelete:CASCADE"`
+	SurveySchema   SurveySchema `gorm:"foreignKey:SurveyId;references:Id;not null"`
+	QuestionType   QuestionType `gorm:"foreignKey:QuestionTypeId;references:Id;not null"`
 	FileType       *FileType    `gorm:"foreignKey:FileTypeId;references:Id;constraint:OnDelete:SET NULL"`
 }

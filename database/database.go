@@ -78,6 +78,8 @@ func performMigrations() error {
 		&databaseSchema.FileType{},
 		&databaseSchema.SurveySchema{},
 		&databaseSchema.QuestionSchema{},
+		&databaseSchema.SurveyResponseSummary{},
+		&databaseSchema.SurveyResponseDetails{},
 	)
 	return err
 }
