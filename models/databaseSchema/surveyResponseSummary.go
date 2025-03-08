@@ -11,4 +11,5 @@ type SurveyResponseSummary struct {
 	SurveyId       uint         `json:"surveyId" gorm:"type:bigint unsigned;not null;index"`
 	CreatedAt      time.Time  	`json:"createdAt" gorm:"type:timestamp;default:CURRENT_TIMESTAMP"`
 	SurveySchema   SurveySchema `gorm:"foreignKey:SurveyId;references:Id;not null"`
+	DeletedAt      *time.Time 	`json:"deletedAt,omitempty" gorm:"type:timestamp NULL DEFAULT NULL"`
 }

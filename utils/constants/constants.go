@@ -33,8 +33,9 @@ const (
 	GetSurveys              string = "/get-surveys"
 	GetSurveyAndQuestionary string = "/get-survey-and-questionary/:surveyCode"
 	DeleteSurvey            string = "/delete-survey/:id"
+	UpdateQuestionary       string = "/update-questionary"
 
-	UpdateQuestionary string = "/update-questionary"
+	FetchSurveyAndQuestionary string = "/fetch-survey-and-questionary/:surveyCode"
 )
 
 const OtpHtmlDesign string = `

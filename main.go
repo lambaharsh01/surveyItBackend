@@ -74,9 +74,12 @@ func main() {
 	meGroup.Use(middleware.AuthenticationHandler())
 	routes.MeRoutes(meGroup, dbInstance)
 
-	fetchGroup := apiGroup.Group("/fetch")
-	fetchGroup.Use(middleware.AuthenticationHandler())
-	routes.FetchRoutes(fetchGroup, dbInstance)
+	surveyCreationGroup := apiGroup.Group("/survey-creation")
+	surveyCreationGroup.Use(middleware.AuthenticationHandler())
+	routes.SurveyCreationRoutes(surveyCreationGroup, dbInstance)
+	
+	surveyResponseGroup := apiGroup.Group("/survey-response")
+	routes.SurveyResponseRoutes(surveyResponseGroup, dbInstance)
 
 	router.Run(":" + port)
 

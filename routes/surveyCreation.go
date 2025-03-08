@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func FetchRoutes(router *gin.RouterGroup, db *gorm.DB) {
+func SurveyCreationRoutes(router *gin.RouterGroup, db *gorm.DB) {
 
 	router.GET(constants.GetQuestionTypes, controllers.GetQuestionTypes(db))
 	router.GET(constants.GetFileTypes, controllers.GetFileTypes(db))
