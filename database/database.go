@@ -45,8 +45,6 @@ func connectDB() (*gorm.DB, error) {
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local", dbUsername, dbPassword, dbHost, dbPort, dbName)
 
-	fmt.Println("DSN: ", connectionString)
-
 	databaseConnection, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
