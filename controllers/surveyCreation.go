@@ -273,7 +273,7 @@ func GetSurveys(db *gorm.DB) gin.HandlerFunc {
 			FROM survey_schemas ss
 			LEFT JOIN survey_response_summaries srs ON srs.survey_id = ss.id
 			WHERE ss.created_by = ? AND ss.deleted_at IS NULL
-			GROUP BY ss.survey_name, ss.created_at, ss.active_from, ss.active_to
+			GROUP BY ss.id, ss.survey_name, ss.created_at, ss.active_from, ss.active_to
 			ORDER BY active DESC, ss.id DESC
 			LIMIT ?
 			OFFSET ?`, user.UserId, limit, offset).Scan(&surveys).Error; err != nil{
