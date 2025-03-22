@@ -10,5 +10,6 @@ import (
 func SurveyResponseRoutes(router *gin.RouterGroup, db *gorm.DB) {
 	
 	router.GET(constants.FetchSurveyAndQuestionary, controllers.FetchSurveyAndQuestionary(db))
+	router.POST(constants.SurveySubmission, controllers.SurveySubmission(db))
 
 }

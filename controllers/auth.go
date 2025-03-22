@@ -57,8 +57,6 @@ func Login(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println(LoginUserDataResponse, "LoginUserDataResponse")
-
 		tokenInfo := &structEntities.AuthToken{
 			UserId:                 LoginUserDataResponse.ID,
 			UserEmail:              LoginUserDataResponse.Email,
@@ -287,7 +285,6 @@ func CheckOTP(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		var timeDifference int = utils.TimeDiffMinuet(confirmOtpResponse.OtpSentAt, time.Now())
-		fmt.Println(timeDifference)
 
 		if timeDifference > constants.OtpValidityMinuets {
 			utils.AbortWithStatusJSON(c, http.StatusRequestTimeout, "Timeout")
@@ -348,7 +345,6 @@ func SetPassword(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		var timeDifference int = utils.TimeDiffMinuet(confirmOtpResponse.OtpSentAt, time.Now())
-		fmt.Println(timeDifference)
 
 		if timeDifference > constants.PasswordChangeValidTillMinuets {
 			utils.AbortWithStatusJSON(c, http.StatusRequestTimeout, "Timeout")

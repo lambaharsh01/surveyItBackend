@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/lambaharsh01/surveyItBackend/models/databaseSchema"
 	"github.com/lambaharsh01/surveyItBackend/models/structEntities"
+	"github.com/lambaharsh01/surveyItBackend/utils"
+	"github.com/lambaharsh01/surveyItBackend/utils/constants"
 )
 
 func FetchSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
@@ -101,6 +104,92 @@ func FetchSurveyAndQuestionary(db *gorm.DB) gin.HandlerFunc {
 			"survey":    survey,
 			"questionary":    questionary,
 
+		})
+
+	}
+}
+
+
+
+func SurveySubmission(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		var payload structEntities.SurveySubmissionPayloadStruct
+		if err := c.ShouldBindJSON(&payload); err != nil {
+			utils.AbortWithStatusJSON(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		
+		var getFromDataQuery string = `
+		SELECT
+			1 AS not_first_response,
+			ss.allow_multiple_submissions,
+			COUNT(DISTINCT srs.id) AS previous_responses,
+			u.name AS user_name
+		FROM survey_schemas ss
+		LEFT JOIN survey_response_summaries srs ON srs.survey_id = ss.id
+		LEFT JOIN users u ON u.id = ss.created_by
+		WHERE ss.id = ? AND srs.respondent_email = ?
+		GROUP BY ss.id, u.name
+		`
+
+		var formData structEntities.SurveyResponseFormDataResponseStruct
+		if err := db.Raw(getFromDataQuery, payload.SurveyId, payload.RespondentEmail).Scan(&formData).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
+		
+		if formData.NotFirstResponse && (!formData.AllowMultipleSubmissions && formData.PreviousResponses > 0)  {
+			utils.AbortWithStatusJSON(c, http.StatusConflict, "A response has already been recorded from this device.")
+			return
+		}
+
+		// VALIDATION DONE CREATING SURVEY AND QUESTION RESPONSE 
+
+		var surveySummary databaseSchema.SurveyResponseSummary = databaseSchema.SurveyResponseSummary{
+			RespondentEmail:payload.RespondentEmail,
+			SurveyId: payload.SurveyId,
+		}
+
+		if err:= db.Create(&surveySummary).Error; err != nil {
+			c.Error(err)
+			return
+		}
+
+		// Response summary id obtained preparing for detailed response
+
+		var responses []databaseSchema.SurveyResponseDetails
+
+		for _, rawResponse := range payload.SurveyResponse {
+
+			var response databaseSchema.SurveyResponseDetails = databaseSchema.SurveyResponseDetails{
+				QuestionId: rawResponse.QuestionId,
+				SummaryId:	surveySummary.Id,
+				Response: rawResponse.Response,
+			}
+
+			responses = append(responses, response)
+		}
+
+		if err:= db.Create(&responses).Error; err!=nil {
+			c.Error(err)
+			return
+		}		
+
+
+		emailParameter := &structEntities.MailerModel{
+			ReceiverEmailId: payload.RespondentEmail,
+			Subject:         "Thank You for Filling Out the Form!",
+			Body:            fmt.Sprintf(constants.ThankYouEmailTemplate, formData.UserName),
+			BodyType:        "html",
+		}
+
+		go utils.SendEmail(emailParameter)
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "Response Saved",
 		})
 
 	}

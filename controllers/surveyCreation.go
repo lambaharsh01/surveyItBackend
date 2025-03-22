@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -256,28 +255,32 @@ func GetSurveys(db *gorm.DB) gin.HandlerFunc {
 
 		surveys := []structEntities.SurveysResponseStruct{}
 
-		if err := db.Model(&databaseSchema.SurveySchema{}).
-			Select(`id, 
-			survey_code, 
-			survey_name, 
-			survey_description, 
-			survey_target_audience, 
-			survey_alignment, 
-			survey_color_theme, 
-			allow_multiple_submissions,
-			DATE_FORMAT(active_from, '%Y-%m-%d') AS active_from, 
-			DATE_FORMAT(active_to, '%Y-%m-%d') AS active_to,
-			CASE WHEN CURRENT_DATE BETWEEN active_from AND active_to THEN 1 ELSE 0 END AS active,
-			DATE_FORMAT(created_at, '%D %M %Y') AS created_at
-			`).
-			Where("created_by = ? AND deleted_at IS NULL", user.UserId).
-			Order("id DESC").
-			Limit(limit).
-			Offset(offset).Find(&surveys).Error; err != nil {
-			c.Error(err)
-			return
+		if err:= db.Raw(`
+			SELECT
+				ss.id, 
+				ss.survey_code, 
+				ss.survey_name, 
+				ss.survey_description, 
+				ss.survey_target_audience, 
+				ss.survey_alignment, 
+				ss.survey_color_theme, 
+				ss.allow_multiple_submissions,
+				DATE_FORMAT(ss.active_from, '%Y-%m-%d') AS active_from, 
+				DATE_FORMAT(ss.active_to, '%Y-%m-%d') AS active_to,
+				CASE WHEN CURRENT_DATE BETWEEN ss.active_from AND ss.active_to THEN 1 ELSE 0 END AS active,
+				DATE_FORMAT(ss.created_at, '%D %M %Y') AS created_at,
+				SUM(CASE WHEN srs.id IS NOT NULL THEN 1 ELSE 0 END) AS responses
+			FROM survey_schemas ss
+			LEFT JOIN survey_response_summaries srs ON srs.survey_id = ss.id
+			WHERE ss.created_by = ? AND ss.deleted_at IS NULL
+			GROUP BY ss.survey_name, ss.created_at, ss.active_from, ss.active_to
+			ORDER BY active DESC, ss.id DESC
+			LIMIT ?
+			OFFSET ?`, user.UserId, limit, offset).Scan(&surveys).Error; err != nil{
+				c.Error(err)
+				return
 		}
-
+		
 		if err := db.Model(&databaseSchema.SurveySchema{}).
 			Where("created_by = ? AND deleted_at IS NULL", user.UserId).
 			Count(&total).Error; err != nil {
@@ -400,10 +403,6 @@ func UpdateQuestionary(db *gorm.DB) gin.HandlerFunc {
 				QuestionTypeId: question.QuestionTypeId,
 				FileTypeId: question.FileTypeId,
 			}
-
-			fmt.Println(questionSchema, "questionSchema")
-			fmt.Println(questionSchema.Options, "questionSchema")
-			fmt.Println(len(questionSchema.Options), "questionSchema")
 
 			if err := transaction.Save(&questionSchema).Error; err!= nil {
 				transaction.Rollback()

@@ -29,6 +29,7 @@ type SurveysResponseStruct struct {
 	ActiveTo                 string `json:"activeTo"`
 	Active                   bool   `json:"active"`
 	CreatedAt                string `json:"createdAt"`
+	Responses                int    `json:"responses"`
 }
 
 type QuestionRawResponseStruct struct {
@@ -75,4 +76,31 @@ type AddQuestionaryPayloadStruct struct {
 	SurveyId           uint                        `json:"SurveyId" binding:"required"`
 	Questionary        []QuestionaryPayloadStructs `json:"questionary" binding:"required"`
 	DeletedQuestionIds []uint                      `json:"deletedQuestionIds" binding:"required"`
+}
+
+type SurveySubmissionPayloadStruct struct {
+	RespondentEmail string                 `json:"respondentEmail" bindings:"required"`
+	SurveyId        uint                   `json:"surveyId" bindings:"required"`
+	SurveyResponse  []SurveyResponseStruct `json:"surveyResponse" bindings:"required,min=1,dive"`
+}
+
+type SurveyResponseStruct struct {
+	QuestionId     uint   `json:"questionId" bindings:"required"`
+	QuestionTypeId uint   `json:"questionTypeId" bindings:"required"`
+	Response       string `json:"response"`
+}
+
+type SurveyResponseFormDataResponseStruct struct {
+	NotFirstResponse         bool
+	AllowMultipleSubmissions bool
+	PreviousResponses        int
+	UserName                 string
+}
+
+type SurveyResponsesResponseStruct struct {
+	SurveyId   uint   `json:"surveyId"`
+	SurveyCode string `json:"surveyCode"`
+	SurveyName string `json:"surveyName"`
+	Active     bool   `json:"active"`
+	Responses  int    `json:"responses"`
 }

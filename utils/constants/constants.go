@@ -36,6 +36,7 @@ const (
 	UpdateQuestionary       string = "/update-questionary"
 
 	FetchSurveyAndQuestionary string = "/fetch-survey-and-questionary/:surveyCode"
+	SurveySubmission          string = "/survey-submission"
 )
 
 const OtpHtmlDesign string = `
@@ -65,6 +66,37 @@ const OtpHtmlDesign string = `
 	  </span>
 	  <br/>
 	  <br/>
+</body>
+</html>
+`
+
+const ThankYouEmailTemplate = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thank You!</title>
+</head>
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 40px 20px; color: #333;">
+
+<div style="max-width: 600px; background: #ffffff; padding: 30px; border-radius: 4px; border: 1px solid #e1e4e8; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); margin: auto;">
+    <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eaeaea; margin-bottom: 25px;">
+        <h2 style="color: #2c3e50; font-weight: 600; margin-top: 0;">Thank You <span style="color: #3498db;">for Your Response</span></h2>
+    </div>
+    
+    <div style="text-align: left; line-height: 1.6;">
+        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">I sincerely appreciate you taking the time to complete the response form.</p>
+        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">Your valuable input will help us improve our services and better meet your needs in the future.</p>
+        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">If you have any additional questions or feedback, please don't hesitate to reach out to us.</p>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eaeaea;">
+            <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">Best regards,</p>
+            <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;"><strong>%s</strong></p>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 `
