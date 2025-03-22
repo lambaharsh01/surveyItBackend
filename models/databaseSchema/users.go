@@ -14,8 +14,8 @@ type Users struct {
 	PasswordLastUpdatedAt  	time.Time `json:"passwordLastUpdatedAt" gorm:"type:timestamp"`
 	TicketGenerationStatus 	int       `json:"ticketGenerationStatus" gorm:"type:int; default:200"`
 	OTP              		string    `json:"otp" gorm:"type:varchar(400);"`
-	OtpSentAt 				time.Time `json:"otpSentAt" gorm:"type:timestamp;default:DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -2 DAY)"`
-	InitialOtpSentAt 		time.Time `json:"initialOtpSentAt" gorm:"type:timestamp;default:DATE_ADD(CURRENT_TIMESTAMP, INTERVAL -2 DAY)"`
+	OtpSentAt 				time.Time `json:"otpSentAt" gorm:"type:timestamp"`
+	InitialOtpSentAt 		time.Time `json:"initialOtpSentAt" gorm:"type:timestamp"`
 	OtpCount         		int       `json:"otpCount" gorm:"type:int; default 0"`
 	CreatedAt        		time.Time `json:"createdAt" gorm:"autoCreateTime"`
 }
