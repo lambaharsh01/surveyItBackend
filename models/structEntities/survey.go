@@ -98,9 +98,9 @@ type SurveyResponseFormDataResponseStruct struct {
 }
 
 type SurveyResponsesResponseStruct struct {
-	SurveyId   uint   `json:"surveyId"`
-	SurveyCode string `json:"surveyCode"`
-	SurveyName string `json:"surveyName"`
-	Active     bool   `json:"active"`
-	Responses  int    `json:"responses"`
+	ResponseSno     int     `json:"responseSno"`
+	RespondentEmail string  `json:"respondentEmail"`
+	Question        string  `json:"question"`
+	Response        *string `json:"response"`
+	SubmittedAt     string  `json:"submittedAt"`
 }

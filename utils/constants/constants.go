@@ -37,6 +37,8 @@ const (
 
 	FetchSurveyAndQuestionary string = "/fetch-survey-and-questionary/:surveyCode"
 	SurveySubmission          string = "/survey-submission"
+
+	GetResponseData string = "/get-response-data/:surveyCode"
 )
 
 const OtpHtmlDesign string = `

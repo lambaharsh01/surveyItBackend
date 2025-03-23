@@ -20,4 +20,7 @@ func SurveyCreationRoutes(router *gin.RouterGroup, db *gorm.DB) {
 
 	router.POST(constants.UpdateQuestionary, controllers.UpdateQuestionary(db))
 
+	// Response View
+	router.GET(constants.GetResponseData, controllers.GetResponseData(db))
+
 }
