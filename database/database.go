@@ -84,27 +84,28 @@ func performMigrations() error {
 
 func MigrateWithDefaultData() error {
 
-	transaction := dataBaseInstance.Begin()
+	// transaction := dataBaseInstance.Begin()
 
-	defer func() {
-		if recover := recover(); recover != nil {
-			transaction.Rollback()
-		}
-	}()
+	// defer func() {
+	// 	if recover := recover(); recover != nil {
+	// 		transaction.Rollback()
+	// 	}
+	// }()
 
-	transaction.Exec("DELETE FROM file_types WHERE 1=1")
-	if err := transaction.Create(&databaseSchema.DefaultFileTypes).Error; err != nil {
-		transaction.Rollback()
-		return err
-	}
+	// transaction.Exec("DELETE FROM file_types WHERE 1=1")
+	// if err := transaction.Create(&databaseSchema.DefaultFileTypes).Error; err != nil {
+	// 	transaction.Rollback()
+	// 	return err
+	// }
 
-	transaction.Exec("DELETE FROM question_types WHERE 1=1")
-	if err := transaction.Create(&databaseSchema.DefaultQuestionTypes).Error; err != nil {
-		transaction.Rollback()
-		return err
-	}
+	// transaction.Exec("DELETE FROM question_types WHERE 1=1")
+	// if err := transaction.Create(&databaseSchema.DefaultQuestionTypes).Error; err != nil {
+	// 	transaction.Rollback()
+	// 	return err
+	// }
 
-	return transaction.Commit().Error
+	// return transaction.Commit().Error
+	return nil
 
 }
 
