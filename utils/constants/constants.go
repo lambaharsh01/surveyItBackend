@@ -87,8 +87,8 @@ const ThankYouEmailTemplate = `
     
     <div style="text-align: left; line-height: 1.6;">
         <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">I sincerely appreciate you taking the time to complete the response form.</p>
-        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">Your valuable input will help us improve our services and better meet your needs in the future.</p>
-        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">If you have any additional questions or feedback, please don't hesitate to reach out to us.</p>
+        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">Your valuable input will help me improve myself.</p>
+        <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">If you have any additional questions or feedback, please don't hesitate to reach out.</p>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eaeaea;">
             <p style="color: #4a4a4a; font-size: 16px; margin-bottom: 16px;">Best regards,</p>
