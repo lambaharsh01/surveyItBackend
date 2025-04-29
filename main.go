@@ -22,6 +22,14 @@ func main() {
 	if loadEnvError != nil {
 		log.Fatal("Error accessing .env file")
 	}
+	
+	var ginMode string = utils.GetEnv("GIN_MODE")
+    if ginMode == "release" {
+		gin.SetMode(gin.ReleaseMode) // switching to optimized release mode if production
+		fmt.Println("Release Mode Running")
+    }else{
+		fmt.Println("Debug Mode Running")
+	}
 
 	port := utils.GetEnv("PORT")
 
